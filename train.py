@@ -19,6 +19,7 @@ from typing import Optional, Dict, Sequence
 
 import torch
 import transformers
+from transformers import LlamaForCausalLM, LlamaTokenizer
 from torch.utils.data import Dataset
 from transformers import Trainer
 
@@ -193,10 +194,7 @@ def train():
     parser = transformers.HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
 
-    model = transformers.AutoModelForCausalLM.from_pretrained(
-        model_args.model_name_or_path,
-        cache_dir=training_args.cache_dir,
-    )
+    '''model = transformers.AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path,cache_dir=training_args.cache_dir,)
 
     tokenizer = transformers.AutoTokenizer.from_pretrained(
         model_args.model_name_or_path,
@@ -204,7 +202,15 @@ def train():
         model_max_length=training_args.model_max_length,
         padding_side="right",
         use_fast=False,
-    )
+    )'''
+
+    #tokenizer = LlamaTokenizer.from_pretrained(model_args.model_name_or_path)
+    #model = LlamaForCausalLM.from_pretrained(model_args.model_name_or_path)
+
+    tokenizer = LlamaTokenizer.from_pretrained("/home/seungyoun/stanford_alpaca/ckpt/7B/tokenizer")
+    #model = LlamaForCausalLM.from_pretrained("/home/seungyoun/stanford_alpaca/ckpt/7B/llama-7b")
+    model = LlamaForCausalLM.from_pretrained('/home/seungyoun/stanford_alpaca/ckpt/alpaca_7B/checkpoint-2000')
+
     if tokenizer.pad_token is None:
         smart_tokenizer_and_embedding_resize(
             special_tokens_dict=dict(pad_token=DEFAULT_PAD_TOKEN),
